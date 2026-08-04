@@ -118,7 +118,6 @@ app.get("/" , (req, res) =>{
     res.send("Hi, I am root!");
 })
 
-
 app.listen(port , () =>{
     console.log(`server is listening on the port ${port}`);
 });

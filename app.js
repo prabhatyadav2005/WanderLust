@@ -6,6 +6,8 @@ const methodOverride = require("method-override");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 const {listingSchema} = require("./schema.js");
+const Review = require("./models/review.js");
+
 
 //Database connection setup:->
 const mongoose = require('mongoose');
@@ -141,6 +143,22 @@ app.delete("/listings/:id", wrapAsync(async (req, res) => {
     res.redirect("/listings");
 }));
 
+//Reviews 
+//Post Route
+
+app.post("/listings/:id/reviews", async (req, res) => {
+   let listing = await Listing.findById(req.params.id);  
+   let newReview = new Review(req.body.review);           
+
+   listing.reviews.push(newReview);
+
+   await newReview.save();
+   await listing.save();
+
+   res.redirect(`/listings/${listing._id}`);
+});
+
+
 
 app.all("*splat", (req, res, next) =>{
     next(new ExpressError(404, "Page Not found!"));
@@ -151,6 +169,7 @@ app.use((err, req, res, next) =>{
     res.render("error.ejs" , {message});
     // res.status(statusCode).send(message);
 });
+
 
 
 const port = 3000;

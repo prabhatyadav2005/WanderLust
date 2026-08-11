@@ -54,7 +54,7 @@ const validateListing = (req, res, next) =>{
 };
 
 const validateReview = (req, res, next) =>{
-    let {error} = listingSchema.validate(req.body);
+    let {error} = reviewSchema.validate(req.body);
 
     if(error){
         let errMsg = error.details.map((el) => el.message).join(",");
@@ -81,7 +81,7 @@ app.get("/listings/new",wrapAsync(async(req, res)=>{
 //show Route
 app.get("/listings/:id", wrapAsync(async (req,res) =>{
     let {id} = req.params;
-    const listing  = await Listing.findById(id);
+    const listing  = await Listing.findById(id).populate("reviews");
     res.render("listings/show.ejs",{listing});
 }));
 

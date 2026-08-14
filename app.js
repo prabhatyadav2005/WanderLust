@@ -6,6 +6,8 @@ const methodOverride = require("method-override");
 const ExpressError  = require("./utils/ExpressError.js");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
+const session = require("express-session");
+
 
 const {listingSchema, reviewSchema} = require("./schema.js");
 const Review = require("./models/review.js");
@@ -49,7 +51,14 @@ app.use((err, req, res, next) =>{
     // res.status(statusCode).send(message);
 });
 
+//Express - Session
+const sessionOptions = {
+    secret: "musupersecretcode",
+    resave: false,
+    saveUninitialized: true
+}
 
+app.use(session(sessionOptions));
 
 const port = 3000;
 app.get("/" , (req, res) =>{

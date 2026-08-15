@@ -7,7 +7,7 @@ const ExpressError  = require("./utils/ExpressError.js");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const session = require("express-session");
-
+const flash = require("connect-flash");
 
 const {listingSchema, reviewSchema} = require("./schema.js");
 const Review = require("./models/review.js");
@@ -37,19 +37,11 @@ app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
 
 
-app.use("/listings" , listings);
-app.use("/listings/:id/reviews" , reviews);
 
-
-app.all("*splat", (req, res, next) =>{
-    next(new ExpressError(404, "Page Not found!"));
+app.get("/" , (req, res) =>{
+    res.send("Hi, I am root!");
 });
 
-app.use((err, req, res, next) =>{
-    let {statusCode=500, message= "something went wrong!"} = err;
-    res.render("error.ejs" , {message});
-    // res.status(statusCode).send(message);
-});
 
 //Express - Session
 const sessionOptions = {
@@ -64,11 +56,31 @@ const sessionOptions = {
 }
 
 app.use(session(sessionOptions));
+app.use(flash());
+
+app.use((req, res, next) =>{
+    res.locals.success = req.flash("success");
+    next();
+});
+
+app.use("/listings" , listings);
+app.use("/listings/:id/reviews" , reviews);
+
+
+app.all("*splat", (req, res, next) =>{
+    next(new ExpressError(404, "Page Not found!"));
+});
+
+app.use((err, req, res, next) =>{
+    let {statusCode=500, message= "something went wrong!"} = err;
+    res.render("error.ejs" , {message});
+    // res.status(statusCode).send(message);
+});
+
+
+
 
 const port = 3000;
-app.get("/" , (req, res) =>{
-    res.send("Hi, I am root!");
-})
 
 app.listen(port , () =>{
     console.log(`server is listening on the port ${port}`);

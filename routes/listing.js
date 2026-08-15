@@ -81,15 +81,20 @@ router.put("/:id",
     listing.image = { filename: "listingimage", url: image };
 
     await listing.save();
+    req.flash("success","Listing Updated!");
+
     res.redirect(`/listings/${id}`);
 }));
 
 
 //delete Route
-router.delete("/:id", wrapAsync(async (req, res) => {
+router.delete(
+    "/:id", 
+    wrapAsync(async (req, res) => {
     let { id } = req.params;
-
-    await Listing.findByIdAndDelete(id);
+    let deletedListing = await Listing.findByIdAndDelete(id);
+    console.log(deletedListing);
+    req.flash("success", "Listing Deleted!");
 
     res.redirect("/listings");
 }));

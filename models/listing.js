@@ -9,10 +9,8 @@ const listingSchema = new Schema({
     },
     description: String,
     image: {
-        filename : String,
-        // default: "https://www.istockphoto.com/photo/young-woman-sitting-on-edge-looks-out-at-view-gm1065043970-284792252?searchscope=image%2Cfilm",
-        // set : (v) => v === "" ? "https://www.istockphoto.com/photo/young-woman-sitting-on-edge-looks-out-at-view-gm1065043970-284792252?searchscope=image%2Cfilm" : v
         url: String,
+        filename : String,
     },
     price: Number,
     location: String,

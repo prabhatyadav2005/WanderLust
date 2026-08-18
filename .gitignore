@@ -28,3 +28,5 @@ coverage/
 
 # Local file uploads (using Cloudinary now, not needed)
 uploads/
+# .gitignore
+classroom/

@@ -51,22 +51,26 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateListing = async (req, res) => {
     let { id } = req.params;
-    let listing = await Listing.findById(id);
-
-    let { title, description, price, country, location, image } = req.body.listing;
-
-    listing.title = title;
-    listing.description = description;
-    listing.price = price;
-    listing.country = country;
-    listing.location = location;
-
-    // Always replace image wholesale — don't try to mutate the existing value
-    listing.image = { filename: "listingimage", url: image };
-
+    let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+     
+    if(typeof req.file !== "undefined"){
+    let url = req.file.path;
+    let filename = req.file.filename;
+    listing.image  ={url, filename};
     await listing.save();
-    req.flash("success", "Listing Updated!");
+    }
+    // let { title, description, price, country, location, image } = req.body.listing;
 
+    // listing.title = title;
+    // listing.description = description;
+    // listing.price = price;
+    // listing.country = country;
+    // listing.location = location;
+
+    // // Always replace image wholesale — don't try to mutate the existing value
+    // listing.image = { filename: "listingimage", url: image };
+
+    req.flash("success", "Listing Updated!");
     res.redirect(`/listings/${id}`);
 };
 
